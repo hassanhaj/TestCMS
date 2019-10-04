@@ -1,0 +1,46 @@
+﻿@page "{menuUrl?}"
+@inject TestCMS.AppDbContext.TestCMSContext _db
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<content>
+@if (Model.CurrentMenuItem != null)
+{
+    <div>
+        @Html.Raw(Model.CurrentMenuItem.ContentText)
+    </div>
+}
+</content>
+
+@section Menu {
+    @foreach (var item in Model.MenuItems)
+    {
+        @if (item.Children.Count > 0)
+        {
+            <li class="nav-item dropdown">
+                <a id="dropdown_@item.Id" data-toggle="dropdown" class="nav-link text-dark dropdown-toggle" asp-area="" asp-page="#">
+                    @item.Title
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdown_@item.Id">
+                    @foreach (var child in item.Children)
+                    {
+                        <a class="dropdown-item" href="/@child.MenuUrl">
+                            @child.Title
+                        </a>
+                    }
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="/@item.MenuUrl">
+                    @item.Title
+                </a>
+            </li>
+        }
+    }
+
+}
